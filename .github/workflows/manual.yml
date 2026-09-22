@@ -17,7 +17,7 @@ jobs:
       - name: Checkout source repo
         uses: actions/checkout@v4
         with:
-          repository: dev-nuII/lilguy-notifier/tree/main
+          repository: dev-nuII/lilguy-notifier
           path: source
           token: ${{ secrets.SOURCE_REPO_PAT }}   # only needed if source is private
 
