@@ -19,8 +19,6 @@ jobs:
         with:
           repository: dev-nuII/lilguy-notifier
           path: source
-          token: ${{ secrets.SOURCE_REPO_PAT }}   # only needed if source is private
-
       - name: Overwrite files
         run: |
           rsync -av --delete \
