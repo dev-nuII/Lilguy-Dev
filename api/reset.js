@@ -5,8 +5,6 @@ const FIREBASE_SECRET = process.env.FIREBASE_SECRET;
 // so this can never touch a real player's save no matter what's in the request.
 const SAVE_KEY = "dev";
 
-const data = {}
-
 setCorsHeaders(res, "POST, OPTIONS", req);
   if (req.method === "OPTIONS") return res.status(200).end();
   if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
@@ -27,11 +25,11 @@ setCorsHeaders(res, "POST, OPTIONS", req);
     // very next save instead of staying attached to the record.
     data.save_code = code;
 
-    await fetch(`${FIREBASE_URL}/saves/${code}.json?auth=${FIREBASE_SECRET}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
+    await fetch(`${FIREBASE_URL}/saves/${saveKey}.json?auth=${FIREBASE_SECRET}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ reset: true }),
+      });
 
     return res.status(200).json({ success: true, saveCode: code });
   } catch (error) {
