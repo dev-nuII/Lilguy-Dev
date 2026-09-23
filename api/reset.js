@@ -1,7 +1,7 @@
+const { setCorsHeaders } = require("../lib/cookies");
 
 const FIREBASE_URL = process.env.FIREBASE_URL;
 const FIREBASE_SECRET = process.env.FIREBASE_SECRET;
-const ADMIN_RESET_SECRET = process.env.ADMIN_RESET_SECRET;
 
 // Always wipes saves/dev — nothing else. Fixed key, no cookies, no wildcard,
 // so this can never touch a real player's save no matter what's in the request.
@@ -11,10 +11,6 @@ module.exports = async function handler(req, res) {
   setCorsHeaders(res, "POST, OPTIONS", req);
   if (req.method === "OPTIONS") return res.status(200).end();
   if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
-
-  // Guard: this is destructive, so it shouldn't be callable by anyone who
-  // just finds the URL. Set ADMIN_RESET_SECRET in Vercel env vars and pass
-  // it as a header when you call this.
 
   try {
     // Full overwrite (PUT) of /saves/dev with an empty object — the key
