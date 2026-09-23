@@ -17,7 +17,6 @@ jobs:
         with:
           repository: dev-nuII/lilguy-notifier
           path: target
-          token: ${{ secrets.LILGUY_NOTIFIER_PAT }}
 
       - name: Sync files, protecting production-only files
         run: |
