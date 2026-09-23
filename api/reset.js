@@ -8,9 +8,9 @@ const FIREBASE_SECRET = process.env.FIREBASE_SECRET;
 const SAVE_KEY = "dev";
 
 module.exports = async function handler(req, res) {
-  setCorsHeaders(res, "POST, OPTIONS", req);
+  setCorsHeaders(res, "PUT, OPTIONS", req);
   if (req.method === "OPTIONS") return res.status(200).end();
-  if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
+  if (req.method !== "PUT") return res.status(405).json({ error: "Method not allowed" });
 
   try {
     // Full overwrite (PUT) of /saves/dev with an empty object — the key
