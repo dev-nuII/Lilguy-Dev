@@ -298,7 +298,8 @@ const BLACK = "#000000";
 
 // ---------- STATE ----------
 // Removed (dead — never read after being saved/loaded): hp, event_running,
-// lilguy2_0, one, change_change, changevar, x1, animation, last_open_date_str
+// lilguy2_0, one, change_change, changevar, x1, animation, last_open_date_str,
+// machine_id
 let state = {
   x: 180, y: 0,
   mood: 2, mental_state: "neutral",
@@ -517,7 +518,6 @@ async function saveToCloud() {
     bond: state.bond,
     last_hunger_check: new Date().toISOString(),
     hunger: state.hunger,
-    machine_id: "web-client",
     pets_today: state.pets_today,
     last_pet_str: new Date().toISOString(),
     weather: state.weather,
