@@ -1,10 +1,11 @@
-const { setCorsHeaders } = require("../lib/cookies");
 
 const FIREBASE_URL = process.env.FIREBASE_URL;
 const FIREBASE_SECRET = process.env.FIREBASE_SECRET;
 // Always wipes saves/dev — nothing else. Fixed key, no cookies, no wildcard,
 // so this can never touch a real player's save no matter what's in the request.
 const SAVE_KEY = "dev";
+
+const data = {}
 
 setCorsHeaders(res, "POST, OPTIONS", req);
   if (req.method === "OPTIONS") return res.status(200).end();
