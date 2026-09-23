@@ -7,8 +7,7 @@ const FIREBASE_SECRET = process.env.FIREBASE_SECRET;
 const SAVE_KEY = "dev";
 
 module.exports = async function handler(req, res) {
-  setCorsHeaders(res, "POST, OPTIONS", req);
-  if (req.method === "OPTIONS") return res.status(200).end();
+  setCorsHeaders(res, "POST", req);
   if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
 
   // Guard: this is destructive, so it shouldn't be callable by anyone who
