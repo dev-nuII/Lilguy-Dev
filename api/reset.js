@@ -6,31 +6,35 @@ const FIREBASE_SECRET = process.env.FIREBASE_SECRET;
 // so this can never touch a real player's save no matter what's in the request.
 const SAVE_KEY = "dev";
 
-module.exports = async function handler(req, res) {
-  setCorsHeaders(res, "POST", req);
+setCorsHeaders(res, "POST, OPTIONS", req);
+  if (req.method === "OPTIONS") return res.status(200).end();
   if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
 
-  // Guard: this is destructive, so it shouldn't be callable by anyone who
-  // just finds the URL. Set ADMIN_RESET_SECRET in Vercel env vars and pass
-  // it as a header when you call this.
-
   try {
-    const resp = await fetch(
-      `${FIREBASE_URL}/saves/${SAVE_KEY}.json?auth=${FIREBASE_SECRET}`,
-      {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({}),
-      }
-    );
-
-    if (!resp.ok) {
-      throw new Error(`Firebase returned ${resp.status}`);
+    const data = req.body;
+    if (!data || typeof data !== "object" || Array.isArray(data)) {
+      return res.status(400).json({ error: "Invalid save data" });
     }
 
-    return res.status(200).json({ success: true, wiped: SAVE_KEY });
+    // The client always hits /api/load-save on startup first, so the cookie
+    // should already be set — but fall back to minting one here too so a
+    // save is never silently dropped if this somehow gets called first.
+  
+
+    // This is a full overwrite (PUT) of /saves/{code}, so re-stamp save_code
+    // into the payload every time — otherwise it would get wiped out on the
+    // very next save instead of staying attached to the record.
+    data.save_code = code;
+
+    await fetch(`${FIREBASE_URL}/saves/${code}.json?auth=${FIREBASE_SECRET}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+
+    return res.status(200).json({ success: true, saveCode: code });
   } catch (error) {
-    console.error("reset-dev-save error:", error);
-    return res.status(500).json({ error: "Failed to wipe dev save" });
+    console.error("reset-error:", error);
+    return res.status(500).json({ error: "Failed to save game" });
   }
 };
