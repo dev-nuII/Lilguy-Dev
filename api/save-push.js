@@ -1,7 +1,10 @@
-const { getSaveCodeFromReq, setCorsHeaders } = require("../lib/cookies");
+const { setCorsHeaders } = require("../lib/cookies");
 
 const FIREBASE_URL = process.env.FIREBASE_URL;
 const FIREBASE_SECRET = process.env.FIREBASE_SECRET;
+
+// Dev mode: always write to saves/dev, ignore cookies entirely.
+const SAVE_KEY = "dev";
 
 module.exports = async function handler(req, res) {
   setCorsHeaders(res, "POST, OPTIONS", req);
@@ -14,18 +17,13 @@ module.exports = async function handler(req, res) {
       return res.status(400).json({ error: "Invalid push subscription" });
     }
 
-    const code = getSaveCodeFromReq(req);
-    if (!code) {
-      return res.status(400).json({ error: "No save found for this device yet — load the game first." });
-    }
-
-    await fetch(`${FIREBASE_URL}/saves/${code}/subscription.json?auth=${FIREBASE_SECRET}`, {
+    await fetch(`${FIREBASE_URL}/saves/${SAVE_KEY}/subscription.json?auth=${FIREBASE_SECRET}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(subscription),
     });
 
-    return res.status(200).json({ success: true, saveCode: code });
+    return res.status(200).json({ success: true, saveCode: SAVE_KEY });
   } catch (error) {
     console.error("save-push error:", error);
     return res.status(500).json({ error: "Failed to save subscription" });
