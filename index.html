@@ -55,19 +55,23 @@
 </div>
 
 <div id="idleScreen" style="display:none;position:fixed;inset:0;z-index:20;
-     background:#000;flex-direction:column;
-     align-items:center;justify-content:center;font-family:monospace;color:#fff;
-     text-align:center;padding:20px;">
-  <p id="hp" style="font-size:22px;margin-bottom:28px;max-width:600px;"></p>
-  <p id="mood" style="font-size:22px;margin-bottom:28px;max-width:600px;"></p>
-  <p id="sleeping" style="font-size:22px;margin-bottom:28px;max-width:600px;"></p>
-  <p id="clock" style="font-size:22px;margin-bottom:28px;max-width:600px;"></p>
-  <p id="date" style="font-size:22px;margin-bottom:28px;max-width:600px;"></p>
-  <p id="lilguyDialouge" style="font-size:22px;margin-bottom:28px;max-width:600px;"></p>
-  <p id="timeRunning" style="font-size:22px;margin-bottom:28px;max-width:600px;"></p>
-
-  <button id="exitIdle" style="padding:14px 44px;font-size:18px;font-family:monospace;
-       background:#00ff00;border:none;cursor:pointer;">Exit Idle mode</button>
+     background:#000;overflow-y:auto;font-family:monospace;color:#fff;
+     text-align:center;padding:40px 20px;box-sizing:border-box;">
+  <div style="margin:auto;max-width:600px;display:flex;flex-direction:column;align-items:center;">
+    <style>
+      #idleScreen p { font-size:22px; line-height:1.5; margin:0 0 44px 0; }
+    </style>
+    <p id="hp"></p>
+    <p id="hunger"></p>
+    <p id="mood"></p>
+    <p id="sleeping"></p>
+    <p id="clock"></p>
+    <p id="date"></p>
+    <p id="lilguyDialouge"></p>
+    <p id="timeRunning"></p>
+    <button id="exitIdle" style="padding:14px 44px;font-size:18px;font-family:monospace;
+         background:#00ff00;border:none;cursor:pointer;">Exit Idle mode</button>
+  </div>
 </div>
   
 <div id="sleepScreen" style="display:none;position:fixed;inset:0;z-index:20;
@@ -277,19 +281,60 @@ document.getElementById("playBtn").addEventListener("click", async () => {
   }
 });
 // ---------- IDLE SCREEN -----------
+// ---------- IDLE SCREEN -----------
+let idleTimer = null;
+let idleLastLine = "";
+
 function showIdleScreen() {
   document.getElementById("idleScreen").style.display = "flex";
   requestWakeLock();
+  updateIdleScreen();                              // fill immediately
+  clearInterval(idleTimer);
+  idleTimer = setInterval(updateIdleScreen, 1000); // then refresh every second
 }
+
 function hideIdleScreen() {
   document.getElementById("idleScreen").style.display = "none";
+  clearInterval(idleTimer);
+  idleTimer = null;
 }
-function updateIdleScreen(){
-  document.getElementById("hp").textContent = stringify(state.hp);
-  document.getElementById("mood").textContent = stringify(state.mood);
-  document.getElementById("hunger").textContent = stringify(state.hunger);
-  document.getElementById("lilguyDialouge").textContent = stringify(state.currentline);
+
+function formatDuration(totalSeconds) {
+  const h = Math.floor(totalSeconds / 3600);
+  const m = Math.floor((totalSeconds % 3600) / 60);
+  const s = totalSeconds % 60;
+  return `${h}h ${m}m ${s}s`;
 }
+
+function updateIdleScreen() {
+  const now = new Date();
+
+  // lines vanish after 5s in the game, so keep the last one visible here
+  if (state.current_line) idleLastLine = state.current_line;
+
+  document.getElementById("hp").textContent = "HP: " + state.hp;
+  document.getElementById("hunger").textContent = "Hunger: " + Math.round(state.hunger);
+  document.getElementById("mood").textContent = "Mood: " + state.mental_state;
+
+  let sleepText = "Awake";
+  if (state.sleeping) {
+    const msLeft = Math.max(0, (state.sleep_wake_at || 0) - Date.now());
+    const h = Math.floor(msLeft / 3600000);
+    const m = Math.floor((msLeft % 3600000) / 60000);
+    sleepText = `Sleeping (back in ~${h}h ${m}m)`;
+  }
+  document.getElementById("sleeping").textContent = sleepText;
+
+  document.getElementById("clock").textContent = now.toLocaleTimeString();
+  document.getElementById("date").textContent = now.toLocaleDateString(undefined, {
+    weekday: "long", year: "numeric", month: "long", day: "numeric",
+  });
+  document.getElementById("lilguyDialouge").textContent = idleLastLine ? `"${idleLastLine}"` : "...";
+  document.getElementById("timeRunning").textContent = "Time together this session: " + formatDuration(state.session_seconds);
+}
+
+document.getElementById("idleBtn").addEventListener("click", showIdleScreen);
+document.getElementById("exitIdle").addEventListener("click", hideIdleScreen);
 // ---------- CANVAS SETUP ----------
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
