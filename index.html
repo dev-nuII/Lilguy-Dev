@@ -593,6 +593,7 @@ async function loadSave() {
 
   } catch (e) {
     console.log("cloud load failed:", e);
+    loadFailed = true;
     return null;
   }
 }
@@ -607,6 +608,7 @@ let userIp = null;
 getIp().then(ip => { userIp = ip; }).catch(() => {});
 
 async function saveToCloud() {
+  if (!saveReady) return;
   const data = {
     mental_state: state.mental_state,
     mood: state.mood,
@@ -852,6 +854,7 @@ if (saved.last_hunger_check) {
     }
   }, 5 * 60 * 1000);
  saveReady = !loadFailed;
+  lastHungerAt = Date.now()
   mainLoop();
 }
 
@@ -868,7 +871,10 @@ function tick() {
     }
     return;
   }
-drainHunger();
+  drainHunger();
+  if (state.session_seconds % 3600 === 0 && state.session_seconds !== 0) {
+  state.pets_today = Math.min(8, state.pets_today + 1);
+}
   if (state.bond >= 100 * BOND_SCALE) state.lilguy_color = YELLOW;
   else if (state.bond >= 30 * BOND_SCALE) state.lilguy_color = "rgb(0,220,150)";
   else state.lilguy_color = GREEN;
