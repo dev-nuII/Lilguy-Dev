@@ -581,7 +581,7 @@ async function saveToCloud() {
   const data = {
     mental_state: state.mental_state,
     mood: state.mood,
-    hp: state.hp,,
+    hp: state.hp,
     x_pos: state.x,
     y_pos: state.y,
     last_open_date: new Date().toISOString().slice(0, 10),
@@ -875,7 +875,7 @@ function tick() {
     }
   }
 
-  if (!state.moment_active && !state.presence_moment_active && state.mood !== 3 && randInt(1, 1200) === 1 && idleTimer !== null) {
+  if (!state.moment_active && !state.presence_moment_active && state.mood !== 3 && randInt(1, 1200) === 1 && idleTimer === null) {
     state.moment_active = true;
     state.moment_expires_at = state.session_seconds + 20;
     state.current_line = "hey... i found something. what should we do with it?";
@@ -886,7 +886,7 @@ function tick() {
     state.mood = state.mood === 1 ? 2 : state.mood;
   }
 
-  if (!state.moment_active && !state.presence_moment_active && state.mood !== 3 && randInt(1, 1800) === 1 && idleTimer !== null) {
+  if (!state.moment_active && !state.presence_moment_active && state.mood !== 3 && randInt(1, 1800) === 1 && idleTimer === null) {
     state.presence_moment_active = true;
     state.presence_moment_expires_at = state.session_seconds + 12;
     state.current_line = "can you just... stay for a second?";
