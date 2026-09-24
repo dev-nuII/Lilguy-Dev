@@ -405,7 +405,7 @@ let weather_particles = [];
 
 const exit_rect  = { x: 590, y: 120, w: 50, h: 50 };
 const feed_rect  = { x: 590, y: 180, w: 50, h: 50 };
-const idle_rect = { x: 590, y: 240, w: 50, h: 50};
+const idle_rect = { x: 590, y: 60, w: 50, h: 50};
 let lilguy_rect  = { x: state.x, y: 450, w: 30, h: 20 };
 
 // ---------- DIALOGUE ----------
@@ -581,9 +581,7 @@ async function saveToCloud() {
   const data = {
     mental_state: state.mental_state,
     mood: state.mood,
-    hp: state.hp,
-    change_change: state.change_change,
-    changevar: state.changevar,
+    hp: state.hp,,
     x_pos: state.x,
     y_pos: state.y,
     last_open_date: new Date().toISOString().slice(0, 10),
@@ -698,12 +696,8 @@ async function startup() {
     state.mood = saved.mood ?? state.mood;
     state.event_running = saved.event_running ?? false;
     state.hp = saved.hp ?? state.hp;
-    state.one = saved.one ?? 0;
-    state.change_change = saved.change_change ?? 0;
-    state.changevar = saved.changevar ?? 1;
     state.x = saved.x_pos ?? state.x;
     state.y = saved.y_pos ?? state.y;
-    state.x1 = saved.x1_pos ?? state.x1;
     state.streak = saved.streak ?? 0;
     state.bond = saved.bond ?? 0;
     state.animation = saved.animation ?? 0;
@@ -881,7 +875,7 @@ function tick() {
     }
   }
 
-  if (!state.moment_active && !state.presence_moment_active && state.mood !== 3 && randInt(1, 1200) === 1) {
+  if (!state.moment_active && !state.presence_moment_active && state.mood !== 3 && randInt(1, 1200) === 1 && idleTimer !== null) {
     state.moment_active = true;
     state.moment_expires_at = state.session_seconds + 20;
     state.current_line = "hey... i found something. what should we do with it?";
@@ -892,7 +886,7 @@ function tick() {
     state.mood = state.mood === 1 ? 2 : state.mood;
   }
 
-  if (!state.moment_active && !state.presence_moment_active && state.mood !== 3 && randInt(1, 1800) === 1) {
+  if (!state.moment_active && !state.presence_moment_active && state.mood !== 3 && randInt(1, 1800) === 1 && idleTimer !== null) {
     state.presence_moment_active = true;
     state.presence_moment_expires_at = state.session_seconds + 12;
     state.current_line = "can you just... stay for a second?";
