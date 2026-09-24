@@ -37,7 +37,7 @@
 
   for (const [id, url] of Object.entries(buttonLinks)) {
     document.getElementById(id).addEventListener("click", () => {
-      window.open(url, "_blank", "noopener");
+      window.location.href = url;
     });
   }
 </script>
