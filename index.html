@@ -497,6 +497,15 @@ function sleep(ms) { return new Promise(res => setTimeout(res, ms)); }
 function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
 function choice(arr) { return arr[randInt(0, arr.length - 1)]; }
 
+// 1. New helper (near your state variables)
+let lastHungerAt = Date.now();
+function drainHunger() {
+  const now = Date.now();
+  const hours = (now - lastHungerAt) / 3600000;
+  lastHungerAt = now;
+  state.hunger = Math.max(0, state.hunger - hours * mods.hunger_drain * hunger_drain_weather);
+}
+  
 function isNightTime() {
   const h = new Date().getHours();
   return h >= 22 || h < 6;
@@ -750,12 +759,11 @@ async function startup() {
       state.pets_today = Math.min(8, state.pets_today + Math.floor(hoursPassed));
     }
 
-    if (saved.last_hunger_check) {
+if (saved.last_hunger_check) {
       const lastHunger = new Date(saved.last_hunger_check);
       const hoursPassed = (Date.now() - lastHunger.getTime()) / 3600000;
       state.hunger = Math.max(0, state.hunger - hoursPassed);
     }
-
     if (saved.last_open_date) {
       state.last_open_date = dateOnlyUTC(new Date(saved.last_open_date));
       state.gap = daysBetween(state.last_open_date, today);
@@ -853,18 +861,14 @@ function tick() {
 
   // while asleep: just watch the clock, skip everything else
   if (state.sleeping) {
+    lastHungerAt = Date.now()
     updateSleepCountdown();
     if (state.sleep_wake_at && Date.now() >= state.sleep_wake_at) {
       wakeUp();
     }
     return;
   }
-
-  if (state.session_seconds % 3600 === 0 && state.session_seconds !== 0) {
-    state.hunger = Math.max(0, state.hunger - mods.hunger_drain * hunger_drain_weather);
-    state.pets_today = Math.min(8, state.pets_today + 1);
-  }
-
+drainHunger();
   if (state.bond >= 100 * BOND_SCALE) state.lilguy_color = YELLOW;
   else if (state.bond >= 30 * BOND_SCALE) state.lilguy_color = "rgb(0,220,150)";
   else state.lilguy_color = GREEN;
