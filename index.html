@@ -54,6 +54,22 @@
        background:#00ff00;border:none;cursor:pointer;">PLAY AGAIN</button>
 </div>
 
+<div id="idleScreen" style="display:none;position:fixed;inset:0;z-index:20;
+     background:#000;flex-direction:column;
+     align-items:center;justify-content:center;font-family:monospace;color:#fff;
+     text-align:center;padding:20px;">
+  <p id="hp" style="font-size:22px;margin-bottom:28px;max-width:600px;"></p>
+  <p id="mood" style="font-size:22px;margin-bottom:28px;max-width:600px;"></p>
+  <p id="sleeping" style="font-size:22px;margin-bottom:28px;max-width:600px;"></p>
+  <p id="clock" style="font-size:22px;margin-bottom:28px;max-width:600px;"></p>
+  <p id="date" style="font-size:22px;margin-bottom:28px;max-width:600px;"></p>
+  <p id="lilguyDialouge" style="font-size:22px;margin-bottom:28px;max-width:600px;"></p>
+  <p id="timeRunning" style="font-size:22px;margin-bottom:28px;max-width:600px;"></p>
+
+  <button id="exitIdle" style="padding:14px 44px;font-size:18px;font-family:monospace;
+       background:#00ff00;border:none;cursor:pointer;">Exit Idle mode</button>
+</div>
+  
 <div id="sleepScreen" style="display:none;position:fixed;inset:0;z-index:20;
      background:#000;flex-direction:column;
      align-items:center;justify-content:center;font-family:monospace;color:#fff;
@@ -260,7 +276,20 @@ document.getElementById("playBtn").addEventListener("click", async () => {
     startMusicSystem();
   }
 });
-
+// ---------- IDLE SCREEN -----------
+function showIdleScreen() {
+  document.getElementById("idleScreen").style.display = "flex";
+  requestWakeLock();
+}
+function hideIdleScreen() {
+  document.getElementById("idleScreen").style.display = "none";
+}
+function updateIdleScreen(){
+  document.getElementById("hp").textContent = stringify(state.hp);
+  document.getElementById("mood").textContent = stringify(state.mood);
+  document.getElementById("hunger").textContent = stringify(state.hunger);
+  document.getElementById("lilguyDialouge").textContent = stringify(state.currentline);
+}
 // ---------- CANVAS SETUP ----------
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
@@ -298,7 +327,7 @@ const BLACK = "#000000";
 
 // ---------- STATE ----------
 let state = {
-  x: 180, y: 0, x1: 0,
+  x: 180, y: 0,
   mood: 2, mental_state: "neutral",
   hp: 5, hunger: 20,
   bond: 0, streak: 0,
@@ -310,8 +339,6 @@ let state = {
   animation: 0, animation_seconds_override: 0,
   lilguy_color: GREEN,
   running: true,
-  event_running: false, change_change: 0, changevar: 1,
-  lilguy2_0: false, one: 0,
   save_num: 0,
   last_open_date: null,
   last_open_date_str: null,
