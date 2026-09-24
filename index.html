@@ -7,27 +7,37 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <title>Lil Guy Dev Board</title>
 <style>
-  html, body {
-    margin: 0;
-    padding: 0;
-    background: #111;
-    height: 100%;
+  #devButtons {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 10;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    touch-action: manipulation;
+    flex-direction: column;
+    gap: 12px;               /* change this to adjust spacing */
   }
-  canvas {
-    image-rendering: pixelated;
-    display: block;
+  #devButtons button {
+    padding: 8px 12px;
+    font-family: monospace;
   }
 </style>
-</head>
-<body>
-<button id="wipeDev" style="position: fixed; top: 10px; left: 10px; z-index: 10; padding: 8px 12px; font-family: monospace;">
-  reset dev save</button>
-<button id="checkWeather" style="position: fixed; top: 100px; left: 10px; z-index: 10; padding: 8px 12px; font-family: monospace;">
-  check weather </button>
-<button id="checkHunger" style="position: fixed; top: 200px; left: 10px; z-index: 10; padding: 8px 12px; font-family: monospace;">
-  check hunger </button>
+
+<div id="devButtons">
+  <button id="wipeDev">reset dev save</button>
+  <button id="checkWeather">check weather</button>
+  <button id="checkHunger">check hunger</button>
+</div>
+
+<script>
+  const buttonLinks = {
+    wipeDev:      "https://example.com/reset",    // <- put your URLs here
+    checkWeather: "https://example.com/weather",
+    checkHunger:  "https://example.com/hunger",
+  };
+
+  for (const [id, url] of Object.entries(buttonLinks)) {
+    document.getElementById(id).addEventListener("click", () => {
+      window.open(url, "_blank", "noopener");
+    });
+  }
+</script>
