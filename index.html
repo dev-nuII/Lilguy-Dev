@@ -73,8 +73,7 @@
          background:#00ff00;border:none;cursor:pointer;">Exit Idle mode</button>
   </div>
 </div>
-  
-<div id="sleepScreen" style="display:none;position:fixed;inset:0;z-index:20;
+ <div id="sleepScreen" style="display:none;position:fixed;inset:0;z-index:20;
      background:#000;flex-direction:column;
      align-items:center;justify-content:center;font-family:monospace;color:#fff;
      text-align:center;padding:20px;">
@@ -281,7 +280,6 @@ document.getElementById("playBtn").addEventListener("click", async () => {
   }
 });
 // ---------- IDLE SCREEN -----------
-// ---------- IDLE SCREEN -----------
 let idleTimer = null;
 let idleLastLine = "";
 
@@ -333,7 +331,6 @@ function updateIdleScreen() {
   document.getElementById("timeRunning").textContent = "Time together this session: " + formatDuration(state.session_seconds);
 }
 
-document.getElementById("idleBtn").addEventListener("click", showIdleScreen);
 document.getElementById("exitIdle").addEventListener("click", hideIdleScreen);
 // ---------- CANVAS SETUP ----------
 const canvas = document.getElementById("game");
@@ -408,6 +405,7 @@ let weather_particles = [];
 
 const exit_rect  = { x: 590, y: 120, w: 50, h: 50 };
 const feed_rect  = { x: 590, y: 180, w: 50, h: 50 };
+const idle_rect = { x: 590, y: 240, w: 50, h: 50};
 let lilguy_rect  = { x: state.x, y: 450, w: 30, h: 20 };
 
 // ---------- DIALOGUE ----------
@@ -583,22 +581,17 @@ async function saveToCloud() {
   const data = {
     mental_state: state.mental_state,
     mood: state.mood,
-    event_running: state.event_running,
     hp: state.hp,
-    lilguy2_0: state.lilguy2_0,
-    one: state.one,
     change_change: state.change_change,
     changevar: state.changevar,
     x_pos: state.x,
     y_pos: state.y,
-    x1_pos: state.x1,
     last_open_date: new Date().toISOString().slice(0, 10),
     streak: state.streak,
     bond: state.bond,
     animation: state.animation,
     last_hunger_check: new Date().toISOString(),
-    hunger: state.hunger,
-    machine_id: "web-client",
+    hunger: state.hunger,,
     pets_today: state.pets_today,
     last_pet_str: new Date().toISOString(),
     weather: state.weather,
@@ -1025,6 +1018,7 @@ function draw(text_surface) {
   drawText(relationshipDescriptor(), 140, 200, GREEN);
   fillRect(exit_rect.x, exit_rect.y, exit_rect.w, exit_rect.h, RED);
   fillRect(feed_rect.x, feed_rect.y, feed_rect.w, feed_rect.h, BLUE);
+  fillRect(idle_rect.x, idle_rect.y, idle_rect.w, idle_rect.h, GREEN);
   ctx.restore();
 }
 
@@ -1103,7 +1097,9 @@ function handleClick(clickX, clickY) {
     saveToCloud();
   }
 }
-
+if(pointInRect(clickX, clickY, idle_recr)) {
+  showIdleScreen()
+}
 function pointInRect(px, py, r) {
   return px >= r.x && px <= r.x + r.w && py >= r.y && py <= r.y + r.h;
 }
