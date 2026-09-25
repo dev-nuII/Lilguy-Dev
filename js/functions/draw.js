@@ -57,7 +57,7 @@ function draw(text_surface) {
     weather_particles = [];
   }
 
-  ctx.strokeStyle = BLACK;
+  ctx.strokeStyle = WHITE;
   ctx.lineWidth = 2;
   ctx.beginPath();
   ctx.moveTo(0, 250);
