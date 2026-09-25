@@ -19,9 +19,9 @@ function draw(text_surface) {
     drawText("zzz", goodnight_rect.x + 8, goodnight_rect.y + 15, WHITE);
   }
 
-  if (state.mood === 1) drawText("mood :   :)", 140, 125, GREEN);
-  else if (state.mood === 2) drawText("mood :  :|", 140, 125, YELLOW);
-  else if (state.mood === 3) drawText("mood :   >:{", 140, 125, RED);
+  if (state.mood === 1) drawText("mood :   :)", 0, 63, GREEN);
+  else if (state.mood === 2) drawText("mood :  :|", 0, 63, YELLOW);
+  else if (state.mood === 3) drawText("mood :   >:{", 0, 63, RED);
 
   if (state.current_line) {
     const clampedX = Math.min(state.x, 600);
