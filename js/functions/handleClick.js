@@ -35,7 +35,7 @@ function handleClick(clickX, clickY) {
     state.lilstate1 = "-.-";
     state.sleeping = true;
     clearScreen(BLACK);
-    drawText(state.current_line, 180, 300)
+    drawText(state.current_line, 180, 300, RED);
     clearScreen(BLACK);
     releaseWakeLock();
     saveToCloud();
