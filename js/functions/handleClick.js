@@ -36,6 +36,7 @@ function handleClick(clickX, clickY) {
     state.sleeping = true;
     releaseWakeLock();
     saveToCloud();
+    browserSleep();
     return;
   }
 
