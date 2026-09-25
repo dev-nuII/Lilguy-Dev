@@ -68,6 +68,7 @@ function draw(text_surface) {
   drawText(String(Math.round(state.hunger)), 90, 23, RED);
   drawText("HUNGER=", 0, 23, RED);
   drawText(relationshipDescriptor(), 0, 43, GREEN);
+  drawText("Gear: " + state.gear.length + " item" + (state.gear.length === 1 ? "" : "s"), 0, 63, WHITE);
   fillRect(exit_rect.x, exit_rect.y, exit_rect.w, exit_rect.h, RED);
   fillRect(feed_rect.x, feed_rect.y, feed_rect.w, feed_rect.h, BLUE);
   fillRect(idle_rect.x, idle_rect.y, idle_rect.w, idle_rect.h, ORANGE);
