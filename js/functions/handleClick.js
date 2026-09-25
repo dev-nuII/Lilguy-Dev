@@ -34,6 +34,9 @@ function handleClick(clickX, clickY) {
     state.lilstate = "-.-";
     state.lilstate1 = "-.-";
     state.sleeping = true;
+    clearScreen(BLACK);
+    drawText(state.current_line, 180, 300)
+    clearScreen(BLACK);
     releaseWakeLock();
     saveToCloud();
     browserSleep();
