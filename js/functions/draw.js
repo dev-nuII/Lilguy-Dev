@@ -16,12 +16,10 @@ function draw(text_surface) {
   }
   if (isNightTime()) {
     fillRect(goodnight_rect.x, goodnight_rect.y, goodnight_rect.w, goodnight_rect.h, "rgb(60,60,100)");
-    drawText("zzz", goodnight_rect.x + 8, goodnight_rect.y + 15, WHITE);
-  }
-
-  if (state.mood === 1) drawText("mood :   :)", 20, 125, GREEN);
-  else if (state.mood === 2) drawText("mood :  :|", 20, 125, YELLOW);
-  else if (state.mood === 3) drawText("mood :   >:{", 20, 125, RED);
+    drawText("zzz", goodnight_rect.x + 8, goodnight_rect.y + 15,
+  if (state.mood === 1) drawText("mood :   :)", 20, 0, GREEN);
+  else if (state.mood === 2) drawText("mood :  :|", 20, 0, YELLOW);
+  else if (state.mood === 3) drawText("mood :   >:{", 20, 0, RED);
 
   if (state.current_line) {
     const clampedX = Math.min(state.x, 600);
@@ -64,10 +62,10 @@ function draw(text_surface) {
   ctx.lineTo(800, 250);
   ctx.stroke();
 
-  drawText(state.mental_state, 0, 180, GREEN);
-  drawText(String(Math.round(state.hunger)), 90, 157, RED);
-  drawText("HUNGER=", 0, 157, RED);
-  drawText(relationshipDescriptor(), 0, 200, GREEN);
+  drawText(state.mental_state, 0, 0, GREEN);
+  drawText(String(Math.round(state.hunger)), 90, 23, RED);
+  drawText("HUNGER=", 0, 23, RED);
+  drawText(relationshipDescriptor(), 0, 43, GREEN);
   fillRect(exit_rect.x, exit_rect.y, exit_rect.w, exit_rect.h, RED);
   fillRect(feed_rect.x, feed_rect.y, feed_rect.w, feed_rect.h, BLUE);
   fillRect(idle_rect.x, idle_rect.y, idle_rect.w, idle_rect.h, ORANGE);
