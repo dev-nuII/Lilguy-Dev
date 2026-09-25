@@ -36,6 +36,7 @@ function handleClick(clickX, clickY) {
     state.sleeping = true;
     clearScreen(BLACK);
     drawText(state.current_line, 180, 300, RED);
+    await sleep(3200);
     clearScreen(BLACK);
     releaseWakeLock();
     saveToCloud();
