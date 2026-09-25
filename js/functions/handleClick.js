@@ -33,6 +33,9 @@ function handleClick(clickX, clickY) {
     ]);
     state.lilstate = "-.-";
     state.lilstate1 = "-.-";
+    state.sleeping = true;
+    releaseWakeLock();
+    saveToCloud();
     return;
   }
 
