@@ -39,7 +39,7 @@ module.exports = async function handler(req, res) {
         };
 
         if (idleHappySeconds >= IDLE_THRESHOLD_HOURS * 3600) {
-          const gear = rollGear("idle"); // no dropTable -> flat idle roll
+          const gear = rollGear(null, true); // no dropTable -> flat idle roll
           const existingGear = Array.isArray(save.gear) ? save.gear : [];
           patch.gear = [...existingGear, gear];
           patch.idle_happy_seconds = 0; // reset after awarding
