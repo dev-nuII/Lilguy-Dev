@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<title>Lil Guy</title>
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: #111;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    touch-action: manipulation;
+  }
+  canvas {
+    image-rendering: pixelated;
+    display: block;
+  }
+</style>
+</head>
+<body>
+<button id="enableNotifs" style="position: fixed; top: 10px; left: 10px; z-index: 10; padding: 8px 12px; font-family: monospace;">
+  Enable Notifications</button>
+<div style="position: fixed; top: 60px; left: 10px; z-index: 10; font-family: monospace;">
+  <input id="recoveryInput" placeholder="ABCD-EFGH-JKLM" style="padding: 6px;">
+  <button id="redeemBtn">Load with code</button>
+</div>
+<div style="position: fixed; top: 90px; left: 10px; z-index: 10; font-family: monospace;">
+  <input id="userInput" placeholder="Henry" style="padding: 6px;">
+  <button id="userName">Enter a name</button>
+</div>
+<canvas id="game" width="800" height="900"></canvas>
+
+<div id="startScreen" style="position:fixed;inset:0;z-index:20;
+     background:#000;display:flex;flex-direction:column;
+     align-items:center;justify-content:center;font-family:monospace;color:#fff;">
+  <h1 style="letter-spacing:3px;font-size:32px;margin-bottom:24px;">LIL GUY</h1>
+  <button id="playBtn" style="padding:14px 44px;font-size:18px;font-family:monospace;
+       background:#00ff00;border:none;cursor:pointer;">PLAY</button>
+</div>
+
+<div id="exitScreen" style="display:none;position:fixed;inset:0;z-index:20;
+     background:#000;flex-direction:column;
+     align-items:center;justify-content:center;font-family:monospace;color:#fff;
+     text-align:center;padding:20px;">
+  <p id="exitMessage" style="font-size:22px;margin-bottom:28px;max-width:600px;"></p>
+  <button id="playAgainBtn" style="padding:14px 44px;font-size:18px;font-family:monospace;
+       background:#00ff00;border:none;cursor:pointer;">PLAY AGAIN</button>
+</div>
+
+<div id="idleScreen" style="display:none;position:fixed;inset:0;z-index:20;
+     background:#000;overflow-y:auto;font-family:monospace;color:#fff;
+     text-align:center;padding:40px 20px;box-sizing:border-box;">
+  <style>
+    #idleScreen p { font-size:22px; line-height:1.5; margin:0 0 44px 0; }
+
+    /* phone in landscape: fit everything on one screen */
+    @media (orientation: landscape) and (max-height: 500px) {
+      #idleScreen { padding: 8px 16px !important; }
+      #idleInner {
+        display: grid !important;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px 16px;
+        width: 100%;
+        max-width: none !important;
+        align-items: center;
+      }
+      #idleScreen p { font-size: 18px; line-height: 1.3; margin: 0; }
+      #idleScreen #lilguyDialouge { font-size: 20px; }
+      #idleScreen #lilguyDialouge,
+      #idleScreen #timeRunning,
+      #idleScreen #exitIdle { grid-column: 1 / -1; justify-self: center; }
+      #idleScreen #exitIdle { padding: 8px 32px !important; font-size: 16px !important; }
+    }
+  </style>
+
+  <div id="idleInner" style="margin:auto;max-width:600px;display:flex;flex-direction:column;align-items:center;">
+    <p id="hp"></p>
+    <p id="hunger"></p>
+    <p id="mood"></p>
+    <p id="sleeping"></p>
+    <p id="clock"></p>
+    <p id="date"></p>
+    <p id="lilguyDialouge"></p>
+    <p id="timeRunning"></p>
+    <button id="exitIdle" style="padding:14px 44px;font-size:18px;font-family:monospace;
+         background:#00ff00;color:#000;border:none;cursor:pointer;">Exit Idle mode</button>
+  </div>
+</div>
+ <div id="sleepScreen" style="display:none;position:fixed;inset:0;z-index:20;
+     background:#000;flex-direction:column;
+     align-items:center;justify-content:center;font-family:monospace;color:#fff;
+     text-align:center;padding:20px;">
+  <p id="sleepMessage" style="font-size:22px;">lilguy is sleeping, check back in a little while!</p>
+  <p id="sleepCountdown" style="font-size:14px;opacity:0.6;margin-top:8px;"></p>
+</div>
+
+<!-- spring backgo-->
+<audio id="myAudio1" src="music/alex-morgan-lofi-coffee-shop-568150.mp3"></audio>
+<!-- winter background music -->
+<audio id="myAudio3" src="music/turning_pages-winter-reflection-451434.mp3"></audio>
+<!-- windy day music -->
+<audio id="myAudio4" src="music/turning_pages-mirrorwalk-reverie-401090.mp3"></audio>
+<!-- summer background music -->
+<audio id="myAudio5" src="music/turning_pages-birch-596924.mp3"></audio>
+<!-- rain ambiance -->
+<audio id="myAudio6" src="music/whvle-rainy-day-chillhop-amp-lofi-207179.mp3"></audio>
+<!-- title screen music -->
+<audio id="myAudio7" src="music/turning_pages-title-screen-602557.mp3"></audio>
+<!--- cloudy day ambiance-->
+<audio id="myAudio2" src="music/turning_pages-sea-of-ghosts-579004.mp3"></audio>
+<!--- autumn background music--->
+<audio id="myAudio8" src="music/turning_pages-autumn-sunset-session-600943.mp3"></audio>
+<!--- snow ambiance --->
+<audio id="myAudio9" src="music/turning_pages-snowy-window-lofi-455028.mp3"></audio>
+
+<!-- data (pure state/constants, load first) -->
+<script src="js/data/audio-data.js"></script>
+<script src="js/data/canvas-data.js"></script>
+<script src="js/data/cloud-data.js"></script>
+<script src="js/data/game-data.js"></script>
+<script src="js/data/push-data.js"></script>
+<script src="js/data/screens-data.js"></script>
+<script src="js/data/startup-data.js"></script>
+<script src="js/data/state-data.js"></script>
+<script src="js/data/wakelock-data.js"></script>
+
+<!-- one file per function -->
+<script src="js/functions/checkUnlocks.js"></script>
+<script src="js/functions/choice.js"></script>
+<script src="js/functions/clearScreen.js"></script>
+<script src="js/functions/dateOnlyUTC.js"></script>
+<script src="js/functions/daysBetween.js"></script>
+<script src="js/functions/drainHunger.js"></script>
+<script src="js/functions/draw.js"></script>
+<script src="js/functions/drawText.js"></script>
+<script src="js/functions/drawWrappedText.js"></script>
+<script src="js/functions/fadeTo.js"></script>
+<script src="js/functions/fetchWeather.js"></script>
+<script src="js/functions/fillRect.js"></script>
+<script src="js/functions/formatDuration.js"></script>
+<script src="js/functions/gainBond.js"></script>
+<script src="js/functions/getCanvasCoords.js"></script>
+<script src="js/functions/getIp.js"></script>
+<script src="js/functions/handleClick.js"></script>
+<script src="js/functions/hideIdleScreen.js"></script>
+<script src="js/functions/hideSleepScreen.js"></script>
+<script src="js/functions/isNightTime.js"></script>
+<script src="js/functions/loadSave.js"></script>
+<script src="js/functions/mainLoop.js"></script>
+<script src="js/functions/onWeatherChanged.js"></script>
+<script src="js/functions/playTrack.js"></script>
+<script src="js/functions/pointInRect.js"></script>
+<script src="js/functions/randInt.js"></script>
+<script src="js/functions/relationshipDescriptor.js"></script>
+<script src="js/functions/releaseWakeLock.js"></script>
+<script src="js/functions/requestWakeLock.js"></script>
+<script src="js/functions/resizeCanvas.js"></script>
+<script src="js/functions/saveToCloud.js"></script>
+<script src="js/functions/setupPush.js"></script>
+<script src="js/functions/showIdleScreen.js"></script>
+<script src="js/functions/showSleepScreen.js"></script>
+<script src="js/functions/sleep.js"></script>
+<script src="js/functions/startMusicSystem.js"></script>
+<script src="js/functions/startup.js"></script>
+<script src="js/functions/stopAllMusic.js"></script>
+<script src="js/functions/stopTitle.js"></script>
+<script src="js/functions/subscriptionToPlainObject.js"></script>
+<script src="js/functions/tick.js"></script>
+<script src="js/functions/tryStartTitle.js"></script>
+<script src="js/functions/updateIdleScreen.js"></script>
+<script src="js/functions/updateSleepCountdown.js"></script>
+<script src="js/functions/urlBase64ToUint8Array.js"></script>
+<script src="js/functions/wakeUp.js"></script>
+<script src="js/functions/wantedTrack.js"></script>
+
+<!-- wiring: runs immediately, so loaded last, after every function/data file above -->
+<script src="js/wiring/wakelock-listener.js"></script>
+<script src="js/wiring/canvas-init.js"></script>
+<script src="js/wiring/cloud-init.js"></script>
+<script src="js/wiring/game-input.js"></script>
+<script src="js/wiring/main.js"></script>
+</body>
+</html>
