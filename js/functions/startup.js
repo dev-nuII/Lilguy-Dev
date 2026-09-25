@@ -115,6 +115,13 @@ if (saved.last_hunger_check) {
     else state.mood = randInt(1, 2);
   }
 
+  if (save.sleeping && save.sleep_wake_at && now >= save.sleep_wake_at) { 
+    continue
+  } else {
+  clearScreen(BLACK);
+  drawText("Lilguy is still sleeping.", 60, 300, YELLOW);
+  return
+  };
   if (state.mood === 1) state.mental_state = "good";
   else if (state.mood === 3) state.mental_state = "bad";
   else state.mental_state = "neutral";
