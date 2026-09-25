@@ -7,19 +7,21 @@ function draw(text_surface) {
   ctx.rect(0, 0, 800, 600);
   ctx.clip();
 
-  clearScreen(season_colors[state.season]);
+  clearScreen(BLACK);
   if (state.moment_active) {
     fillRect(keep_rect.x, keep_rect.y, keep_rect.w, keep_rect.h, "rgb(100,200,100)");
     drawText("keep it", keep_rect.x + 10, keep_rect.y + 10, BLACK);
     fillRect(share_rect.x, share_rect.y, share_rect.w, share_rect.h, "rgb(100,150,220)");
     drawText("give it", share_rect.x + 10, share_rect.y + 10, BLACK);
   }
-  if (isNightTime()) {
+   if (isNightTime()) {
     fillRect(goodnight_rect.x, goodnight_rect.y, goodnight_rect.w, goodnight_rect.h, "rgb(60,60,100)");
-    drawText("zzz", goodnight_rect.x + 8, goodnight_rect.y + 15,
-  if (state.mood === 1) drawText("mood :   :)", 20, 0, GREEN);
-  else if (state.mood === 2) drawText("mood :  :|", 20, 0, YELLOW);
-  else if (state.mood === 3) drawText("mood :   >:{", 20, 0, RED);
+    drawText("zzz", goodnight_rect.x + 8, goodnight_rect.y + 15, WHITE);
+  }
+
+  if (state.mood === 1) drawText("mood :   :)", 140, 125, GREEN);
+  else if (state.mood === 2) drawText("mood :  :|", 140, 125, YELLOW);
+  else if (state.mood === 3) drawText("mood :   >:{", 140, 125, RED);
 
   if (state.current_line) {
     const clampedX = Math.min(state.x, 600);
