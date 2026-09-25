@@ -1,40 +1,25 @@
-const FIREBASE_URL = process.env.FIREBASE_URL;
-const FIREBASE_SECRET = process.env.FIREBASE_SECRET;
-const VAPID_PUBLIC_KEY = process.env.VAPID_PUBLIC_KEY;
-const VAPID_PRIVATE_KEY = process.env.VAPID_PRIVATE_KEY;
+// functions/browserSleep.js
+// Called from handleClick.js when the player taps "goodnight" at night.
+// Tells the server to put THIS save to sleep for 8 hours (real sleep is
+// tracked server-side so it persists even if the tab is closed). The
+// automated cron job in api/lilguy-sleep.js wakes everyone back up once
+// sleep_wake_at has passed.
 
-const TZ = "America/Chicago";
-const SLEEP_DURATION_MS = 8 * 60 * 60 * 1000;
+async function browserSleep() {
+  try {
+    const resp = await fetch("/api/lilguy-sleep-now", {
+      method: "POST",
+      credentials: "include",
+    });
 
-const now = Date.now();
-const todayStr = toLocalDateStr(now);
+    if (!resp.ok) {
+      throw new Error("Server returned " + resp.status);
+    }
 
-const wakeAt = now + SLEEP_DURATION_MS;
-
-function toLocal(iso) {
-  return new Date(iso).toLocaleString("en-US", { timeZone: TZ });
+    const data = await resp.json();
+    state.sleep_wake_at = data.sleep_wake_at;
+    state.slept_today = data.slept_today;
+  } catch (e) {
+    console.log("browserSleep failed:", e);
+  }
 }
-
-function toLocalDateStr(ms) {
-  // YYYY-MM-DD in the target TZ, for the "already slept today" check
-  const d = new Date(ms);
-  return d.toLocaleDateString("en-CA", { timeZone: TZ }); // en-CA gives YYYY-MM-DD
-}
-
-function getCurrentLocalHour() {
-  return Number(
-    new Date().toLocaleString("en-US", { timeZone: TZ, hour: "numeric", hour12: false })
-  );
-}
-
-
-await fetch(`${FIREBASE_URL}/saves/${state.save_code}.json?auth=${FIREBASE_SECRET}`, {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            sleeping: true,
-            sleep_wake_at: wakeAt,
-            sleep_wake_at_local: toLocal(new Date(wakeAt).toISOString()),
-            slept_today: todayStr,
-            stop_hunger_check: true,
-          }),
