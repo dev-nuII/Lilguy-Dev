@@ -46,27 +46,6 @@ function tick() {
     }
   }
 
-  if (!state.moment_active && !state.presence_moment_active && state.mood !== 3 && randInt(1, 1200) === 1 && idleTimer === null) {
-    state.moment_active = true;
-    state.moment_expires_at = state.session_seconds + 20;
-    state.current_line = "hey... i found something. what should we do with it?";
-  }
-  if (state.moment_active && state.session_seconds >= state.moment_expires_at) {
-    state.moment_active = false;
-    state.current_line = "...guess it didn't matter that much.";
-    state.mood = state.mood === 1 ? 2 : state.mood;
-  }
-
-  if (!state.moment_active && !state.presence_moment_active && state.mood !== 3 && randInt(1, 1800) === 1 && idleTimer === null) {
-    state.presence_moment_active = true;
-    state.presence_moment_expires_at = state.session_seconds + 12;
-    state.current_line = "can you just... stay for a second?";
-  }
-  if (state.presence_moment_active && state.session_seconds >= state.presence_moment_expires_at) {
-    state.presence_moment_active = false;
-    state.current_line = "...thanks for staying.";
-  }
-
   if (state.session_seconds % 30 === 0 || state.animation_seconds_override !== 0) {
     if (state.mood === 1) {
       const unlockedSprites = unlockTiers
