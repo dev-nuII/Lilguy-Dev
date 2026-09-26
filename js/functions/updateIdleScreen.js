@@ -15,7 +15,8 @@ function updateIdleScreen() {
   : "(none yet)";
   document.getElementById("hunger").textContent = "Hunger: " + Math.round(state.hunger);
   document.getElementById("mood").textContent = "Mood: " + state.mental_state;
-
+  document.getElementById("weather").textContent = "Weather: " + state.last_known_weather
+  document.getElementById("lilguy-animation").textContent = state.lilstate;
   let sleepText = "Awake";
   if (state.sleeping) {
     const msLeft = Math.max(0, (state.sleep_wake_at || 0) - Date.now());
