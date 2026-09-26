@@ -5,8 +5,12 @@ canvas.addEventListener("click", (e) => {
   handleClick(x, y);
 });
 canvas.addEventListener("touchstart", (e) => {
+  if (isBossfight !== false){
   e.preventDefault();
   const touch = e.touches[0];
   const { x, y } = getCanvasCoords(touch.clientX, touch.clientY);
   handleClick(x, y);
+  } else {
+  };
 }, { passive: false });
+
