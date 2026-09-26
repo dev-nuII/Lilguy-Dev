@@ -58,7 +58,7 @@ async function startup() {
     state.highest_bond = saved.highest_bond ?? state.bond;
     state.unlocked_tiers = saved.unlocked_tiers ?? [];
     state.seen_first_snow = saved.seen_first_snow ?? false;
-    state.isBossfight = saved.isBossfight. ?? false;
+    state.isBossfight = saved.isBossfight ?? false;
 
     // ---- sleep state, driven by the cron job ----
     state.sleep_wake_at = saved.sleep_wake_at ?? null;
