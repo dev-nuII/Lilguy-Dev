@@ -38,8 +38,9 @@ document.getElementById("introContinueBtn").addEventListener("click", () => {
   }
 });
 
-document.getElementById("exitIdle").addEventListener("click", hideIdleScreen);
-document.getElementById("petLilguy").addEventListener("click", petLilguy);
+document.getElementById("exitIdle").addEventListener("click", hideIdleScreen());
+document.getElementById("petLilguy").addEventListener("click", petLilguy());
+document.getElementById("feedLilguy").addEventListener("click", feedLilguy());
 document.getElementById("userName").addEventListener("click", () => {
   const user = document.getElementById("userInput").value.trim();
   if (!user) return;
